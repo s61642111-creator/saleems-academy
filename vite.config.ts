@@ -7,12 +7,26 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./client/src"),
+      "@":       path.resolve(__dirname, "./client/src"),
       "@shared": path.resolve(__dirname, "./shared"),
     },
   },
-  root: path.resolve(__dirname, "client"),
-  build: { outDir: path.resolve(__dirname, "dist/public") },
+  root:  path.resolve(__dirname, "client"),
+  build: {
+    outDir:        path.resolve(__dirname, "dist/public"),
+    emptyOutDir:   true,
+    sourcemap:     false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor:    ["react", "react-dom"],
+          ui:        ["@radix-ui/react-tabs", "@radix-ui/react-dialog", "@radix-ui/react-progress"],
+          motion:    ["framer-motion"],
+          query:     ["@tanstack/react-query", "@trpc/client", "@trpc/react-query"],
+        },
+      },
+    },
+  },
   server: {
     proxy: { "/api": { target: "http://localhost:5000", changeOrigin: true } },
   },
